@@ -5,6 +5,22 @@ TagManager:
   serializedVersion: 2
   tags:
   - Shot
+  - Enemy
+  - Inventory
+  - Equipement
+  - Room
+  - Room00
+  - Room-1-1
+  - Room-10
+  - Room-11
+  - Room0-1
+  - Room01
+  - Room1-1
+  - Room10
+  - Room11
+  - Enemy_Fireshot-Fireshot
+  - Enemy_HP-Firerate
+  - DeathParticle
   layers:
   - Default
   - TransparentFX
@@ -41,4 +57,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Trail
+    uniqueID: 642276669
     locked: 0

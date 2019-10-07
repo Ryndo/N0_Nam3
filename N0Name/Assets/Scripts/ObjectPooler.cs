@@ -17,20 +17,21 @@ public class ObjectPooler : MonoBehaviour {
   public List<GameObject> pooledObjects;
 
 	void Awake() {
-		SharedInstance = this;
-	}
-
-	// Use this for initialization
-  void Start () {
+    if(SharedInstance == null){
+      SharedInstance = this;
+      DontDestroyOnLoad(gameObject);
+    }
     pooledObjects = new List<GameObject>();
     foreach (ObjectPoolItem item in itemsToPool) {
       for (int i = 0; i < item.amountToPool; i++) {
         GameObject obj = (GameObject)Instantiate(item.objectToPool);
-        obj.SetActive(false);
         pooledObjects.Add(obj);
+        obj.SetActive(false);
+        
       }
     }
-  }
+		
+	}
 	
   public GameObject GetPooledObject(string tag) {
     for (int i = 0; i < pooledObjects.Count; i++) {
@@ -40,6 +41,24 @@ public class ObjectPooler : MonoBehaviour {
     }
     foreach (ObjectPoolItem item in itemsToPool) {
       if (item.objectToPool.tag == tag) {
+        if (item.shouldExpand) {
+          GameObject obj = (GameObject)Instantiate(item.objectToPool);
+          obj.SetActive(false);
+          pooledObjects.Add(obj);
+          return obj;
+        }
+      }
+    }
+    return null;
+  }
+  public GameObject GetPooledObjectByName(string name) {
+    for (int i = 0; i < pooledObjects.Count; i++) {
+      if (!pooledObjects[i].activeInHierarchy && pooledObjects[i].name == name) {
+        return pooledObjects[i];
+      }
+    }
+    foreach (ObjectPoolItem item in itemsToPool) {
+      if (item.objectToPool.name == name) {
         if (item.shouldExpand) {
           GameObject obj = (GameObject)Instantiate(item.objectToPool);
           obj.SetActive(false);

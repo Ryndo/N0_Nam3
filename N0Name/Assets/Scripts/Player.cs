@@ -2,28 +2,41 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Character
 {
-    Rigidbody2D rigid;
     Vector2 axisInput;
-    Vector2 velocity;
-    public float speed = 25;
-    void Start()
-    {
-        rigid = GetComponent<Rigidbody2D>();
+    public Joystick joystick;
+    public static Player instance;
+
+    public override void Awake(){
+        base.Awake();
+        if(instance != null && instance != this){
+            Destroy(gameObject);
+        }
+        else{
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
     }
 
-    void Update(){
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+    public override void Update(){
+        base.Update();
         velocity = CalculateVelocity();
+        
     }
     void FixedUpdate()
     {
         move(velocity);
     }
     Vector2 CalculateVelocity(){
-        return axisInput = new Vector2(Input.GetAxisRaw("Horizontal"),Input.GetAxisRaw("Vertical"));     
+        return joystick.Direction * speed;  
     }
     void move(Vector2 _velocity){
-        rigid.AddForce(_velocity * speed);
+        rb.AddForce(_velocity);
     }
 }

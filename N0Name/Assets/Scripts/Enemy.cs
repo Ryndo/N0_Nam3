@@ -1,18 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
-public class Enemy : MonoBehaviour
+public class Enemy : Character
 {
-    public float speed;
-    Rigidbody2D rb;
-    void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        
+    
+    Player player;
+    public GameObject deathExplosion;
+    
+    void Start(){
+        player = Player.instance;
     }
-    void OnEnable(){
-        rb.velocity = Vector2.down * speed;
+    public override void Update(){
+        base.Update();
+        if(IsDead()){
+            gameObject.SetActive(false);
+            GameObject deathParticles = ObjectPooler.SharedInstance.GetPooledObject("DeathParticle");
+            deathParticles.transform.position = transform.position;
+            deathParticles.SetActive(true);
+            ResetValues();
+        }
+    }
+    void OnDisable(){
+        //ResetValues();
+    }
+    void ResetValues(){
+        
+        Enemy enemy = DataBaseManager.Instance.enemies.FirstOrDefault(x => x.GetType() == this.GetType());
+        if(enemy){
+            health = enemy.health;
+        }
+        
     }
 
 }
